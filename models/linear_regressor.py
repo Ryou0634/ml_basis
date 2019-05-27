@@ -23,7 +23,7 @@ class LinearRegressor:
                  l1_regularization: float = 0.,
                  l2_regularization: float = 0.):
         self.basis_functions = basis_functions
-        if l1_regularization != 9 and l2_regularization != 0:
+        if l1_regularization != 0 and l2_regularization != 0:
             assert Exception("The model currently does not support apply both l1 and l2 regularizations.")
         self.l1_regularization = l1_regularization
         self.l2_regularization = l2_regularization
