@@ -5,6 +5,7 @@ def solve_normal_equation(phi: np.ndarray,
                           targets: np.ndarray,
                           l2_regularization: float = 0.) -> np.ndarray:
     """
+    Simply solve normal equation with l2 regularization.
 
     Parameters
     ----------
@@ -32,7 +33,7 @@ def alternating_direction_method_of_multipliers(phi: np.ndarray,
                                                 eps: float = 0.0001) -> np.ndarray:
     """
     A method to optimize cost function with l1 regularization.
-    Iteratively, update parameter until it reaches convergence.
+    Iteratively update parameter until it reaches convergence.
     """
 
     batch_size, num_params = phi.shape

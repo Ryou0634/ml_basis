@@ -4,7 +4,7 @@ import tqdm
 from .modules.solvers import solve_normal_equation, alternating_direction_method_of_multipliers
 
 
-class GaussKernelRegressor:
+class LeastSquareProbabilisticGaussKernelClassifier:
     """
     Perform linear classification by Gauss kernel.
 
@@ -20,12 +20,10 @@ class GaussKernelRegressor:
 
     def __init__(self,
                  width: float,
-                 l1_regularization: float = 0.,
+                 n_class: int,
                  l2_regularization: float = 0.):
-        if l1_regularization != 0 and l2_regularization != 0:
-            assert Exception("The model currently does not support apply both l1 and l2 regularizations.")
         self.width = width
-        self.l1_regularization = l1_regularization
+        self.n_class = n_class
         self.l2_regularization = l2_regularization
         self.kernels = []
         self.parameter = None
@@ -45,14 +43,16 @@ class GaussKernelRegressor:
     def fit(self, xs: np.array, ys: np.ndarray):
         assert xs.ndim == 2
         assert ys.ndim == 1
+        assert len(set(ys)) <= self.n_class
 
         self._set_kernels(xs)
         phi = self._calc_design_matrix(xs)
 
-        if self.l1_regularization:
-            self.parameter = alternating_direction_method_of_multipliers(phi, ys, self.l1_regularization)
-        else:
-            self.parameter = solve_normal_equation(phi, ys, self.l2_regularization)
+        parameter_list = []
+        for c in range(self.n_class):
+            param = solve_normal_equation(phi, ys == c, self.l2_regularization)
+            parameter_list.append(param)
+        self.parameter = np.stack(parameter_list)
 
     def _set_kernels(self, xs: np.array):
         self.num_params = len(xs)

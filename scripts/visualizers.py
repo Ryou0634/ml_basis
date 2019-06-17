@@ -3,33 +3,6 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
 
-class Visualizer():
-    def __init__(self, trainer, evaluator):
-        self.trainer = trainer
-        self.evaluator = evaluator
-
-    def set_graph(self):
-        self.fig = plt.figure()
-        self.ax = self.fig.add_subplot(111)
-        self.ax.set_xlabel('epoch')
-        self.ax.set_ylabel('loss')
-        if self.evaluator:
-            self.ax2 = self.ax.twinx()
-            self.ax2.set_ylabel(self.evaluator.measure)
-        plt.ion()
-        self.fig.canvas.draw()
-
-    def update_graph(self):
-        # self.ax.clear()
-        self.ax.set_title('Epoch: {0:4d}'.format(self.trainer.total_epoch))
-        self.ax.plot(self.trainer.loss_record, color='C0', label='loss')
-        if self.trainer.total_epoch == 0: self.ax.legend(loc='lower left')
-        if self.evaluator:
-            self.ax2.plot(self.evaluator.record, color='C1', label=self.evaluator.measure)
-            if self.trainer.total_epoch == 0: self.ax2.legend(loc='upper left')
-        self.fig.canvas.draw()
-
-
 def draw_line(data, n_plots=None):
     """
     Draw a line graph given from an array.
@@ -64,7 +37,7 @@ def draw_scatter(features, labels, classifier=None):
     features : 2d-array (n_data, 2)
         Data points
     labels : array
-        Labels
+        Labels represented by integers.
     classifier:
         A classifier with predict() method which takes features and outputs its labels.
     """
@@ -96,7 +69,19 @@ def draw_scatter(features, labels, classifier=None):
     return
 
 
-def plot_regression(xs, ys, classifier=None, resolution: int =1000):
+def plot_regression(xs, ys, classifier=None, resolution: int = 1000):
+    """
+    Draw a graph.
+
+    Parameters
+    ----------
+    xs : 2d-array (n_data, 1)
+        Data points
+    ys : array (n_data, )
+        Traget values
+    classifier:
+        A classifier with __call__() method which takes features and outputs the target value.
+    """
     assert xs.shape[1] == 1
     assert ys.ndim == 1
 

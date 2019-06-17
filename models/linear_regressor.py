@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List, Callable
 
-from .modules.solvers import alternating_direction_method_of_multipliers, solve_normal_equation
+from .modules.solvers import solve_normal_equation, alternating_direction_method_of_multipliers
 
 
 class LinearRegressor:
@@ -29,7 +29,7 @@ class LinearRegressor:
         self.l2_regularization = l2_regularization
         self.parameter = None
 
-    def __call__(self, xs: np.array):
+    def __call__(self, xs: np.array) -> np.array:
         """
         Perform prediction.
         The output is y = w * phi(x)
@@ -38,6 +38,22 @@ class LinearRegressor:
             assert Exception("The parameter is None. You have to perform `fit` before regression.")
         phi = self._calc_design_matrix(xs)
         return self.parameter.dot(phi.T)
+
+    def predict(self, xs: np.array) -> np.array:
+        """
+        Perform classification.
+
+        Parameters
+        ----------
+        xs : np.array (batch_size, feature_size)
+
+        Returns
+        -------
+        labels : np.array (batch_size, )
+            Binary labels (True or False).
+        """
+        score = self(xs)
+        return score > 0
 
     def fit(self, xs: np.array, ys: np.ndarray):
 
